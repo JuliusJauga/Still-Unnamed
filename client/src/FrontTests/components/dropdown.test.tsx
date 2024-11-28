@@ -11,6 +11,10 @@ vi.mock('../../context/AuthContext', () => ({
 describe('Dropdown', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        useAuth.mockReturnValue({
+            checkUserAuth: vi.fn(),
+            isAuthenticated: false,
+        });
     });
 
     test('renders dropdown button', () => {
@@ -40,7 +44,10 @@ describe('Dropdown', () => {
     });
 
     test('renders correct menu items based on authentication', () => {
-        (useAuth as vi.Mock).mockReturnValue(true);
+        useAuth.mockReturnValue({
+            checkUserAuth: vi.fn(),
+            isAuthenticated: true,
+        });
         render(<Dropdown onSelect={() => {}} />);
         const button = screen.getByRole('button');
         fireEvent.click(button);
@@ -51,13 +58,16 @@ describe('Dropdown', () => {
     });
 
     test('renders correct menu items when not authenticated', () => {
-        (useAuth as vi.Mock).mockReturnValue(false);
+        useAuth.mockReturnValue({
+            checkUserAuth: vi.fn(),
+            isAuthenticated: false,
+        });
         render(<Dropdown onSelect={() => {}} />);
         const button = screen.getByRole('button');
         fireEvent.click(button);
-        expect(screen.getByText('Profile')).toBeInTheDocument();
-        expect(screen.getByText('Settings')).toBeInTheDocument();
         expect(screen.getByText('Login')).toBeInTheDocument();
+        expect(screen.queryByText('Profile')).toBeInTheDocument();
+        expect(screen.queryByText('Settings')).toBeInTheDocument();
         expect(screen.queryByText('Logout')).not.toBeInTheDocument();
     });
 
