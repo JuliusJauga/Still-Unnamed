@@ -28,6 +28,7 @@ const ChatComponent: React.FC = () => {
             console.log('Fetched messages:', data.chats);
             setMessages(data.chats);
             setChatIndex(data.chatIndex);
+            fetchActiveUsers();
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
@@ -35,18 +36,10 @@ const ChatComponent: React.FC = () => {
 
     useEffect(() => {
         fetchMessages();
-        
-        const socket = new WebSocket('ws://localhost:5173');
-
-        socket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            setMessages((prevMessages) => [...prevMessages, message]);
-        };
-        
-        const intervalId = setInterval(fetchMessages, 10000);
+   
+        const intervalId = setInterval(fetchMessages, 5000);
 
         return () => {
-            socket.close();
             clearInterval(intervalId);
         };
 

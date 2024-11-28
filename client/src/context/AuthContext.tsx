@@ -10,14 +10,14 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+ // Check user authentication status
+ export const checkUserAuth = async (setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const result = await checkAuth();
+    setIsAuthenticated(!!result);
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    // Check user authentication status
-    const checkUserAuth = async () => {
-        const result = await checkAuth();
-        setIsAuthenticated(!!result);
-    };
 
     // Log out user
     const logOut = async () => {
@@ -27,11 +27,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Check auth status on initial render
     useEffect(() => {
-        checkUserAuth();
+        checkUserAuth(setIsAuthenticated);
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, checkUserAuth, logOut }}>
+        <AuthContext.Provider value={{ isAuthenticated, checkUserAuth: () => checkUserAuth(setIsAuthenticated), logOut }}>
             {children}
         </AuthContext.Provider>
     );

@@ -5,7 +5,8 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ onSelect }) => {
-    const isAuthenticated = useAuth();
+    // eslint-disable-next-line
+    const {checkUserAuth, isAuthenticated} = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
@@ -13,6 +14,7 @@ const Dropdown: React.FC<DropdownProps> = ({ onSelect }) => {
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const toggleDropdown = () => {
+        checkUserAuth();
         setIsOpen(!isOpen);
     };
 
